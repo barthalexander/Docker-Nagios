@@ -6,7 +6,7 @@ ENV NAGIOS_USER            nagios
 ENV NAGIOS_GROUP           nagios
 ENV NAGIOS_CMDUSER         nagios
 ENV NAGIOS_CMDGROUP        nagios
-ENV NAGIOS_FQDN            monitoring.barth.cloud
+ENV NAGIOS_FQDN            localhost
 ENV NAGIOSADMIN_USER       nagiosadmin
 ENV NAGIOSADMIN_PASS       nagios
 ENV APACHE_RUN_USER        nagios

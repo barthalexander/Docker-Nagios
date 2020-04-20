@@ -16,9 +16,9 @@ ENV DEBIAN_FRONTEND        noninteractive
 ENV NG_NAGIOS_CONFIG_FILE  ${NAGIOS_HOME}/etc/nagios.cfg
 ENV NG_CGI_DIR             ${NAGIOS_HOME}/sbin
 ENV NG_CGI_URL             /cgi-bin
-ENV NAGIOS_BRANCH          nagios-4.4.3
-ENV NAGIOS_PLUGINS_BRANCH  release-2.2.1
-ENV NRPE_BRANCH            nrpe-3.2.1
+ENV NAGIOS_BRANCH          nagios-4.4.5
+ENV NAGIOS_PLUGINS_BRANCH  release-2.3.3
+ENV NRPE_BRANCH            nrpe-4.0.2
 
 
 RUN apt-get update && apt-get install -y    \
@@ -71,6 +71,9 @@ RUN apt-get update && apt-get install -y    \
         snmp-mibs-downloader                \
         unzip                               \
         python                              \
+        nano                                \
+        nmap                                \
+        nsca                                \
                                             && \
     apt-get clean && rm -Rf /var/lib/apt/lists/*
 
@@ -138,13 +141,16 @@ RUN rm -rf /etc/sv/getty-5
 
 ADD overlay /
 
+COPY files/check_scan.sh ${NAGIOS_HOME}/libexec
+
 RUN echo "use_timezone=${NAGIOS_TIMEZONE}" >> ${NAGIOS_HOME}/etc/nagios.cfg
 
 # Copy example config in-case the user has started with empty var or etc
-
+RUN chown -R nagios:nagios ${NAGIOS_HOME}
 RUN mkdir -p /orig/var && mkdir -p /orig/etc  && \
     cp -Rp ${NAGIOS_HOME}/var/* /orig/var/       && \
-    cp -Rp ${NAGIOS_HOME}/etc/* /orig/etc/
+    cp -Rp ${NAGIOS_HOME}/etc/* /orig/etc/ && \
+    cp -p /etc/nsca.cfg /orig
 
 RUN a2enmod session         && \
     a2enmod session_cookie  && \
